@@ -44,6 +44,20 @@ exports.updateProduct = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+exports.getSingleProduct = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+        res.json(product);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 exports.deleteProduct = async (req, res) => {
     const { id } = req.params;
@@ -67,26 +81,3 @@ exports.getOrderSummary = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-// exports.checkout = async (req, res) => {
-//     const { guestName, mobileNo, email } = req.body;
-
-//     if (!req.session.cart.length) {
-//         return res.status(400).json({ message: 'Cart is empty.' });
-//     }
-
-//     try {
-//         const Users = req.session.cart.map(product => ({
-//             guestName,
-//             mobileNo,
-//             email,
-//             productId: product._id
-//         }));
-
-//         await User.insertMany(Users);
-//         req.session.cart = [];
-//         res.status(201).json({ message: 'Thank you for your purchase!', Users });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };

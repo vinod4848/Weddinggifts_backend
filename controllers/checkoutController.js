@@ -22,13 +22,21 @@ const createCheckout = async (req, res) => {
 
 const getAllCheckouts = async (req, res) => {
     try {
-        const checkouts = await Checkout.find();
-        res.status(200).json(checkouts);
+      const checkouts = await Checkout.find().populate({
+        path: "cartItems.productId",
+        select: "name price image", 
+      });
+      if (!checkouts || checkouts.length === 0) {
+        return res.status(404).json({ message: 'No checkouts found' });
+      }
+      res.status(200).json(checkouts);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve checkouts' });
+      console.error("Error retrieving checkouts:", error.message);
+      res.status(500).json({ error: 'Failed to retrieve checkouts' });
     }
-};
-
+  };
+  
+  
 const getCheckoutById = async (req, res) => {
     const { id } = req.params;
     try {
