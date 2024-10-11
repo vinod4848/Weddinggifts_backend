@@ -26,6 +26,7 @@ app.use('/api', require('./routes/products'));
 app.use('/api', require('./routes/cartRoutes'));
 app.use('/api', require('./routes/userRoutes'));
 app.use('/api', require('./routes/paymentsRoutes'));
+app.use('/api', require('./routes/checkoutRoutes'));
 
 // Start server
 app.listen(PORT, () => {

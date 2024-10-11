@@ -68,25 +68,25 @@ exports.getOrderSummary = async (req, res) => {
     }
 };
 
-exports.checkout = async (req, res) => {
-    const { guestName, mobileNo, email } = req.body;
+// exports.checkout = async (req, res) => {
+//     const { guestName, mobileNo, email } = req.body;
 
-    if (!req.session.cart.length) {
-        return res.status(400).json({ message: 'Cart is empty.' });
-    }
+//     if (!req.session.cart.length) {
+//         return res.status(400).json({ message: 'Cart is empty.' });
+//     }
 
-    try {
-        const Users = req.session.cart.map(product => ({
-            guestName,
-            mobileNo,
-            email,
-            productId: product._id
-        }));
+//     try {
+//         const Users = req.session.cart.map(product => ({
+//             guestName,
+//             mobileNo,
+//             email,
+//             productId: product._id
+//         }));
 
-        await User.insertMany(Users);
-        req.session.cart = [];
-        res.status(201).json({ message: 'Thank you for your purchase!', Users });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+//         await User.insertMany(Users);
+//         req.session.cart = [];
+//         res.status(201).json({ message: 'Thank you for your purchase!', Users });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };

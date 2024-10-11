@@ -11,6 +11,6 @@ router.post('/addProduct', upload.single("image"), productController.addProduct)
 router.put('/updateProduct/:id', productController.updateProduct);
 router.delete('/deleteProduct/:id', productController.deleteProduct);
 router.get('/order-summary', productController.getOrderSummary);
-router.post('/checkout', productController.checkout);
+// router.post('/checkout', productController.checkout);
 
 module.exports = router;
