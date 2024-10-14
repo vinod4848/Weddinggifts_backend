@@ -1,24 +1,49 @@
 const Checkout = require("../models/Checkout");
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const createCheckout = async (req, res) => {
     try {
         const { customer, payment, cartItems, totalPrice } = req.body;
 
+        // Save the checkout details in the database
         const newCheckout = new Checkout({
             customer,
             payment,
             cartItems,
             totalPrice,
         });
-
         await newCheckout.save();
-        res.status(201).json({ message: 'Checkout successful', data: newCheckout });
+
+        // Construct the email message
+        const msg = {
+            to: customer.email, 
+            from: 'hi@integrate360.in', 
+            // from: 'ngeduwizer@gmail.com', 
+            subject: 'Thank you for your gift!',
+            text: `Dear ${customer.name},\n\nThank you for your gift purchase! We appreciate your support.\n\nYour Order Details:\n- Total Price: ${totalPrice}\n- Items: ${cartItems.map(item => item.name).join(", ")}\n\nBest regards,\nYour Store`,
+            html: `<p>Dear ${customer.name},</p><p>Thank you for your gift purchase! We appreciate your support.</p><p><strong>Order Details:</strong></p><ul>${cartItems.map(item => `<li>${item.name}</li>`).join('')}</ul><p><strong>Total Price:</strong> ${totalPrice}</p><p>Best regards,<br>Your Store</p>`,
+        };
+
+        try {
+            // Send the email using SendGrid
+            await sgMail.send(msg);
+            res.status(201).json({ message: 'Checkout successful, thank you email sent', data: newCheckout });
+        } catch (emailError) {
+            // Log any error that occurred during email sending
+            console.error('Error sending email:', emailError);
+            if (emailError.response) {
+                console.error('Response body:', emailError.response.body);
+            }
+            res.status(201).json({ message: 'Checkout successful, but email failed to send', data: newCheckout });
+        }
+        
     } catch (error) {
-        console.error(error); 
+        console.error('Checkout processing error:', error);
         res.status(500).json({ error: 'Failed to process checkout' });
     }
 };
-
 
 const getAllCheckouts = async (req, res) => {
     try {
