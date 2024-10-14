@@ -30,20 +30,49 @@ exports.addProduct = async (req, res) => {
     }
 };
 
+// exports.updateProduct = async (req, res) => {
+//     const { id } = req.params;
+//     const { title, price, image, percentageGifted } = req.body;
+
+//     try {
+//         const updatedProduct = await Product.findByIdAndUpdate(id, { title, price, image, percentageGifted }, { new: true });
+//         if (!updatedProduct) {
+//             return res.status(404).json({ message: 'Product not found.' });
+//         }
+//         res.json(updatedProduct);
+//     } catch (error) {
+//         res.status(400).json({ message: error.message });
+//     }
+// };
+
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
-    const { title, price, image, percentageGifted } = req.body;
+    const { title, price } = req.body; 
+    const file = req.file; 
 
     try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, { title, price, image, percentageGifted }, { new: true });
+        let image;
+        if (file) {
+            image = await uploadImage(file); 
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            { title, price, ...(image && { image }) },
+            { new: true }
+        );
+
         if (!updatedProduct) {
             return res.status(404).json({ message: 'Product not found.' });
         }
+        
         res.json(updatedProduct);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
+
 exports.getSingleProduct = async (req, res) => {
     const { id } = req.params;
 

@@ -8,7 +8,7 @@ const productController = require('../controllers/productController');
 
 router.get('/getProducts', productController.getProducts);
 router.post('/addProduct', upload.single("image"), productController.addProduct);
-router.put('/updateProduct/:id', productController.updateProduct);
+router.put('/updateProduct/:id',upload.single("image"), productController.updateProduct);
 router.delete('/deleteProduct/:id', productController.deleteProduct);
 router.get('/getSingleProduct/:id', productController.getSingleProduct);
 router.get('/order-summary', productController.getOrderSummary);
